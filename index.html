@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solana Wallet Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 400px;
+            text-align: center;
+        }
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 20px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>$CLOUD Wallet Checker</h2>
+        <input type="text" id="walletAddress" placeholder="Enter Solana wallet address" />
+        <button onclick="checkWallet()">Check Wallet</button>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        function checkWallet() {
+            const walletAddress = document.getElementById('walletAddress').value;
+            const resultDiv = document.getElementById('result');
+            const url = `https://worker.jup.ag/jup-claim-proof/CLoUDKc4Ane7HeQcPpE3YHnznRxhMimJ4MyaUqyHFzAu/${walletAddress}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const amountInSol = data.amount / 1000000000;
+                    resultDiv.innerHTML = `
+                        <p><strong>Merkle Tree:</strong> ${data.merkle_tree}</p>
+                        <p><strong>Amount:</strong> ${amountInSol} $CLOUD</p>
+                        <p><strong>Locked Amount:</strong> ${data.locked_amount}</p>
+                        <!-- <p><strong>Proof:</strong></p>
+                        <pre>${JSON.stringify(data.proof, null, 2)}</pre> -->
+                    `;
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+                });
+        }
+    </script>
+</body>
+</html>
